@@ -29,6 +29,12 @@ def get_categories():
     serialized_categories = [category.to_dict() for category in categories]
     response=make_response(serialized_categories,200)
     return response
+@app.route('/products', methods=['GET'])
+def get_all_products():
+    products = Product.query.all()
+    serialized_products = [product.to_dict() for product in products]
+    response = make_response(jsonify({'products': serialized_products}), 200)
+    return response
 @app.route('/categories/<int:category_id>/products', methods=['GET'])
 def get_products_by_category(category_id):
     category = Category.query.get_or_404(category_id)
