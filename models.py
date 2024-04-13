@@ -15,7 +15,7 @@ class Product(db.Model,SerializerMixin):
     
     id=db.Column(db.Integer,primary_key=True)
     name=db.Column(db.String,unique=True)
-    description=db.Column(db.String(120))
+    description=db.Column(db.String(200))
     price=db.Column(db.Integer)
     # foreign Column
     category_id=db.Column(db.Integer,db.ForeignKey("categories.id"))
