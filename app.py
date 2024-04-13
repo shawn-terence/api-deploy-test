@@ -152,4 +152,4 @@ def remove_from_favorites(user_id, product_id):
     else:
         return make_response(jsonify({'message': 'Product is not in favorites'}), 400)
 if __name__=="__main__":
-     app.run(port=5550,debug=True)
+     app.run(port=5550,)
