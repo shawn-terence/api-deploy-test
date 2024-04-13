@@ -2,7 +2,10 @@ from flask import Flask,jsonify,make_response,request
 from models import db,Product,Category,User,Profile,check_password_hash
 from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager,create_access_token,create_refresh_token
+from flask_cors import CORS
 jwt=JWTManager()
+CORS(app)
+CORS(app, origins="http://localhost:5173")
 app = Flask(__name__)
 # Database configuration
 app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///app.db"
