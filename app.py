@@ -161,5 +161,14 @@ def remove_from_favorites(user_id, product_id):
         return jsonify({'message': 'Product removed from favorites successfully'}), 200
     else:
         return make_response(jsonify({'message': 'Product is not in favorites'}), 400)
+@app.route('/user/<int:user_id>', methods=['GET'])
+def get_user_by_id(user_id):
+    user = User.query.get(user_id)
+    if not user:
+        return make_response(jsonify({'message': 'User not found'}), 404)
+    
+    serialized_user = user.to_dict()
+    return make_response(jsonify(serialized_user), 200)
+
 if __name__=="__main__":
      app.run(port=5550,)
