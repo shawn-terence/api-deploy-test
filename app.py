@@ -29,13 +29,16 @@ def get_categories():
     serialized_categories = [category.to_dict() for category in categories]
     response=make_response(serialized_categories,200)
     return response
-@app.route('/categories/<int:category_id>/products', methods=['GET'])
-def get_products_by_category(category_id):
-    category = Category.query.get_or_404(category_id)
+@app.route('/categories/<string:category_name>/products', methods=['GET'])
+def get_products_by_category(category_name):
+    # Find the category by name
+    category = Category.query.filter_by(name=category_name).first_or_404()
+    
+    # Get products associated with the category
     products = category.products
     serialized_products = [product.to_dict() for product in products]
-    response=make_response(serialized_products,200)
-    return response
+    
+    return jsonify({'products': serialized_products})
 @app.route('/signup', methods=['POST'])
 def signup():
     data = request.json
@@ -80,18 +83,18 @@ def login_user():
         response = 'Invalid username or password'
         return make_response(response, 401)
     
-@app.route('/delete/<int:user_id>', methods=['DELETE'])
-def delete_user(user_id):
-    # Query the user by user_id
-    user = User.query.get(user_id)
+@app.route('/delete/<string:username>', methods=['DELETE'])
+def delete_user(username):
+    # Query the user by username
+    user = User.query.filter_by(username=username).first()
     
     # Check if the user exists
     if not user:
-        response="User not found"
-
-        return make_response(response,404)
+        response = "User not found"
+        return make_response(response, 404)
+    
     # Delete the user's profile
-    profile = Profile.query.filter_by(user_id=user_id).first()
+    profile = Profile.query.filter_by(user_id=user.id).first()
     if profile:
         db.session.delete(profile)
     
@@ -100,8 +103,9 @@ def delete_user(user_id):
     
     # Commit the session
     db.session.commit()
-    response="User and profile deleted successfully"
-    return make_response(response,200)
+    
+    response = "User and profile deleted successfully"
+    return make_response(response, 200)
 @app.route('/change-username/<int:user_id>', methods=['PUT'])
 def change_username(user_id):
     data = request.json
@@ -135,10 +139,10 @@ def add_to_favorites():
     
     return jsonify({'message': 'Product added to favorites'}), 201
 
-@app.route('/remove-from-favorites/<int:user_id>/<int:product_id>', methods=['DELETE'])
-def remove_from_favorites(user_id, product_id):
-    user = User.query.get(user_id)
-    product = Product.query.get(product_id)
+@app.route('/remove-from-favorites/<string:username>/<string:product_name>', methods=['DELETE'])
+def remove_from_favorites(username, product_name):
+    user = User.query.filter_by(username=username).first()
+    product = Product.query.filter_by(name=product_name).first()
 
     if not user:
         return make_response(jsonify({'message': 'User not found'}), 404)
