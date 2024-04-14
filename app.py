@@ -169,9 +169,7 @@ def get_user_by_id(user_id):
     
     serialized_user = user.to_dict()
     return make_response(jsonify(serialized_user), 200)
-from flask import request, jsonify, make_response
-from app import app, db
-from models import User
+
 
 @app.route('/user', methods=['GET'])
 def get_user_by_username():
@@ -189,6 +187,13 @@ def get_user_by_username():
         # Add other user fields as needed
     }
     return jsonify(serialized_user), 200
-
+@app.route('/products/<int:product_id>', methods=['GET'])
+def get_product_details(product_id):
+    product = Product.query.get(product_id)
+    if not product:
+        return make_response(jsonify({'error': 'Product not found'}), 404)
+    
+    serialized_product = product.to_dict()
+    return make_response(jsonify(serialized_product), 200)
 if __name__=="__main__":
      app.run(port=5550,)
