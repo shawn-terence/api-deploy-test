@@ -195,5 +195,15 @@ def get_product_details(product_id):
     
     serialized_product = product.to_dict()
     return make_response(jsonify(serialized_product), 200)
+@app.route('/show-favorites/<int:user_id>', methods=['GET'])
+def show_favorites(user_id):
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({'message': 'User not found'}), 404
+    
+    favorite_products = user.products
+    serialized_products = [product.to_dict() for product in favorite_products]
+    
+    return jsonify({'favorites': serialized_products}), 200
 if __name__=="__main__":
      app.run(port=5550,)
