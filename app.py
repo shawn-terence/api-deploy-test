@@ -6,7 +6,7 @@ from flask_cors import CORS
 jwt=JWTManager()
 app = Flask(__name__)
 CORS(app)
-CORS(app, origins="http://localhost:5173")
+CORS(app, origins=["http://localhost:5173", "https://movie-base-three.vercel.app"])
 
 # Database configuration
 app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///app.db"
