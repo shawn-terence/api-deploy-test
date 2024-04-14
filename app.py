@@ -169,6 +169,26 @@ def get_user_by_id(user_id):
     
     serialized_user = user.to_dict()
     return make_response(jsonify(serialized_user), 200)
+from flask import request, jsonify, make_response
+from app import app, db
+from models import User
+
+@app.route('/user', methods=['GET'])
+def get_user_by_username():
+    username = request.args.get('username')
+    if not username:
+        return make_response(jsonify({'message': 'Username not provided'}), 400)
+
+    user = User.query.filter_by(username=username).first()
+    if not user:
+        return make_response(jsonify({'message': 'User not found'}), 404)
+
+    serialized_user = {
+        'id': user.id,
+        'username': user.username,
+        # Add other user fields as needed
+    }
+    return jsonify(serialized_user), 200
 
 if __name__=="__main__":
      app.run(port=5550,)
